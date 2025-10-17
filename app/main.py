@@ -142,7 +142,7 @@ def process_promotions_csv(df: pd.DataFrame) -> pd.DataFrame:
     df['end date'] = date_info['end_date']
     
     # Step 4: Melt and pivot data (from notebook cells 7-10)
-    id_cols = [c for c in ["start date", "end date", "country", "currency"] if c in df.columns]
+    id_cols = [c for c in ["month","start date", "end date", "country", "currency"] if c in df.columns]
     attr_pattern = r"(?:price|name|voucher)$"
     product_cols = [c for c in df.columns if re.search(attr_pattern, c)]
     product_cols = [c for c in product_cols if c not in id_cols]
@@ -160,7 +160,7 @@ def process_promotions_csv(df: pd.DataFrame) -> pd.DataFrame:
                  .reset_index())
     
     tidy.columns.name = None
-    order = [c for c in ["start date", "end date", "country", "currency", "product", "coupon", "price", "name"] if c in tidy.columns]
+    order = [c for c in ["month","start date", "end date", "country", "currency", "product", "coupon", "price", "name"] if c in tidy.columns]
     tidy = tidy[order + [c for c in tidy.columns if c not in order]]
     
     # Step 5: Add country names and extra date (from notebook cell 11)
@@ -231,15 +231,15 @@ def get_promotions():
     try:
         if _processed_df is None:
             raise HTTPException(404, "No data available. Upload a CSV first.")
-        print(f"🔍 Debug: DataFrame shape: {_processed_df.shape}")
-        print(f"🔍 Debug: DataFrame columns: {list(_processed_df.columns)}")
+        print(f"Debug: DataFrame shape: {_processed_df.shape}")
+        print(f"Debug: DataFrame columns: {list(_processed_df.columns)}")
         cleaned_df = clean_for_json(_processed_df)
         print(f"🔍 Debug: Cleaned DataFrame shape: {cleaned_df.shape}")
         return cleaned_df.to_dict(orient="records")
     except Exception as e:
-        print(f"❌ Error in get_promotions: {str(e)}")
+        print(f"Error in get_promotions: {str(e)}")
         import traceback
-        print(f"❌ Traceback: {traceback.format_exc()}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(500, f"Internal error: {str(e)}")
 
 @app.get("/promotions/{country}")
