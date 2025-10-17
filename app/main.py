@@ -8,6 +8,12 @@ import io
 from datetime import datetime
 from typing import Optional, List, Dict
 import traceback
+import uvicorn
+import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
 # ---------------- App setup ----------------
 app = FastAPI(title="Promo Cleaning API", version="1.0.0")
